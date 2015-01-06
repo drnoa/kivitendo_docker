@@ -11,10 +11,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libarchive-zip-per
   libemail-address-perl  libemail-mime-perl libfcgi-perl libjson-perl \
   liblist-moreutils-perl libnet-smtp-ssl-perl libnet-sslglue-perl \
   libparams-validate-perl libpdf-api2-perl librose-db-object-perl \
-  librose-db-perl librose-object-perl libsort-naturally-perl \
+  librose-db-perl librose-object-perl libsort-naturally-perl libpq5 \
   libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl \
   libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
-  libfile-copy-recursive-perl postgresql git
+  libfile-copy-recursive-perl postgresql git build-essential \
+  libgd-gd2-perl libimage-info-perl
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
 
@@ -23,6 +24,14 @@ RUN git clone https://github.com/kivitendo/kivitendo-erp.git /var/www/kivitendo-
 
 RUN cp /var/www/kivitendo-erp/config/kivitendo.conf.default /var/www/kivitendo-erp/config/kivitendo.conf
  
+
+#Missing Perl Modules
+RUN cpan HTML::Restrict
+
+#Check Kivitendo installation
+RUN cd /var/www/kivitendo-erp/ && perl /var/www/kivitendo-erp/scripts/installation_check.pl
+
+
 
 # Add the PostgreSQL PGP key to verify their Debian packages.
 # It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
@@ -52,7 +61,6 @@ RUN    /etc/init.d/postgresql start &&\
     psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
     createdb -O docker docker &&\
     psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD 'docker';"
-
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible. 
@@ -85,10 +93,19 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
  
-RUN chown -R root:www-data /var/www
+RUN chown -R www-data:www-data /var/www
 RUN chmod u+rwx,g+rx,o+rx /var/www
 RUN find /var/www -type d -exec chmod u+rwx,g+rx,o+rx {} +
 RUN find /var/www -type f -exec chmod u+rw,g+rw,o+r {} +
+
+#Kivitendo rights
+RUN mkdir /var/www/kivitendo-erp/webdav
+RUN chown -R www-data /var/www/kivitendo-erp/users /var/www/kivitendo-erp/spool /var/www/kivitendo-erp/webdav
+RUN chown www-data /var/www/kivitendo-erp/templates /var/www/kivitendo-erp/users
+RUN chmod -R +x /var/www/kivitendo-erp/
+
+#Perl Modul im Apache laden
+RUN a2enmod cgi.load
 
 EXPOSE 80
  
@@ -97,5 +114,8 @@ ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
  
 # By default, simply start apache.
 CMD /bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND"
+
+
+
 
 
