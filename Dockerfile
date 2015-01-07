@@ -64,9 +64,10 @@ RUN    /etc/init.d/postgresql start &&\
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible. 
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
-RUN echo "local all  kivitendo      password" >> /etc/postgresql/9.3/main/pg_hba.conf
-RUN echo "local all  kivitendo	127.0.0.1 255.255.255.255	password" >> /etc/postgresql/9.3/main/pg_hba.conf
+RUN echo "host	all	all	0.0.0.0/0	md5" >> /etc/postgresql/9.3/main/pg_hba.conf
+RUN echo "local	all	kivitendo	password" >> /etc/postgresql/9.3/main/pg_hba.conf
+RUN echo "local	all	kivitendo	127.0.0.1 255.255.255.255	password" >> /etc/postgresql/9.3/main/pg_hba.conf
+
 
 # And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
 RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
@@ -74,15 +75,8 @@ RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 # Expose the PostgreSQL port
 EXPOSE 5432
 
-# Add VOLUMEs to allow backup of config, logs and databases
-VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
-
-# Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
-
-# Run the rest of the commands as the ``root`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
+# Run the rest of the commands as the ``root`` user
 USER root
-
 
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd
  
@@ -112,10 +106,13 @@ EXPOSE 80
 # Update the default apache site with the config we created.
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
  
+# Add VOLUMEs to allow backup of config, logs and databases
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql", "/var/log/apache2"]
+
+ADD kivitendo_run.sh /usr/local/bin/run
+
 # By default, simply start apache.
-CMD /bin/bash -c "source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND"
-
-
+CMD ["/usr/local/bin/run"]
 
 
 
