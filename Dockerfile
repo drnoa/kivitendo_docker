@@ -121,7 +121,7 @@ ADD supervisord-apache2.sh /supervisord-apache2.sh
 ADD supervisord-postgresql.conf /etc/supervisor/conf.d/supervisord-postgresql.conf
 ADD supervisord-postgresql.sh /supervisord-postgresql.sh
 ADD start.sh /usr/local/bin/start.sh
-RUN chmod 755 /*.sh
+RUN chmod +x /usr/local/bin/*.sh
 
 
 # By default, simply start apache.
