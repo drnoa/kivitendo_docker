@@ -117,9 +117,9 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql", "/var/
 
 # Scripts
 ADD supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
-ADD supervisord-apache2.sh /supervisord-apache2.sh
+ADD supervisord-apache2.sh /usr/local/bin/supervisord-apache2.sh
 ADD supervisord-postgresql.conf /etc/supervisor/conf.d/supervisord-postgresql.conf
-ADD supervisord-postgresql.sh /supervisord-postgresql.sh
+ADD supervisord-postgresql.sh /usr/local/bin/supervisord-postgresql.sh
 ADD start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/*.sh
 
