@@ -60,8 +60,9 @@ RUN pg_dropcluster --stop 9.3 main && pg_createcluster --locale de_DE.UTF-8 --st
 #RUN pg_createcluster --locale=de_DE.UTF-8 --encoding=de_DE.UTF-8 9.3 main
 RUN    /etc/init.d/postgresql start &&\
     psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
-    psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD 'docker';" &&\
-    createdb -O docker docker
+    psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD 'kivitendo';" &&\
+    createdb -O docker docker &&\
+    createdb -O kivitendo kivitendo
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible. 
