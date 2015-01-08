@@ -22,7 +22,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
 # Kivitendo Git Repo clonen
 RUN git clone https://github.com/kivitendo/kivitendo-erp.git /var/www/kivitendo-erp
 
-RUN cp /var/www/kivitendo-erp/config/kivitendo.conf.default /var/www/kivitendo-erp/config/kivitendo.conf
+ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
  
 
 #Missing Perl Modules
@@ -56,11 +56,12 @@ USER postgres
 # then create a database `docker` owned by the ``docker`` role.
 # Note: here we use ``&&\`` to run commands one after the other - the ``\``
 #       allows the RUN command to span multiple lines.
+RUN pg_dropcluster --stop 9.3 main && pg_createcluster --locale de_DE.UTF-8 --start 9.3 main
+#RUN pg_createcluster --locale=de_DE.UTF-8 --encoding=de_DE.UTF-8 9.3 main
 RUN    /etc/init.d/postgresql start &&\
-    pg_createcluster --locale=de_DE.UTF-8 --encoding=UTF-8 9.3 kiwitendo &&\
     psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
-    createdb -O docker docker &&\
-    psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD 'docker';"
+    psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD 'docker';" &&\
+    createdb -O docker docker
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible. 
@@ -83,7 +84,11 @@ EXPOSE 5432
 USER root
 
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd
- 
+
+# SET Servername to localhost
+RUN echo "ServerName localhost" >> /etc/apache2/conf-available/servername.conf
+RUN a2enconf servername
+
 # Manually set up the apache environment variables
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
@@ -104,6 +109,7 @@ RUN chmod -R +x /var/www/kivitendo-erp/
 
 #Perl Modul im Apache laden
 RUN a2enmod cgi.load
+
 
 EXPOSE 80
  
