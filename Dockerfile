@@ -23,9 +23,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
 RUN git clone https://github.com/kivitendo/kivitendo-erp.git /var/www/kivitendo-erp
 
 ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
- 
 
-#Missing Perl Modules
+
+#Install missing Perl Modules
 RUN cpan HTML::Restrict
 
 #Check Kivitendo installation
