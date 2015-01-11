@@ -64,7 +64,8 @@ Run the Kivitendo image
 docker run --name kivitendo_docker -d drnoa/kivitendo_docker:latest
 ```
 Check the ip of your docker container
-```
+```bash
+docker ps -q | xargs docker inspect | grep IPAddress | cut -d '"' -f 4
 ```
 
 Got to the administrative interface of kivitendo using the password: admin123 and configure the database. All database users (kivitendo and docker) use docker as password.
