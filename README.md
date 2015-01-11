@@ -119,6 +119,27 @@ psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} pos
 \password postgres
 ```
 
+## Build container from Dockerfile
+You can build the container from the Dockerfile in
+https://github.com/drnoa/kivitendo_docker
+
+simply clone the git repo localy and then build
+```bash
+git clone https://github.com/drnoa/kivitendo_docker.git
+cd kivitendo_docker
+sudo docker build .
+```
+
+When you build the container using the Dockerfile you have the possibility to change some parameters
+for example the used postgressql version or the database locale (default ist de_DE).
+Its also possible to change the postgred passwords.
+To change this paramters simply edit the Dockerfile and edit the following values:
+```bash
+ENV postgresversion 9.3
+ENV locale de_CH
+ENV postrespassword docker
+```
+
 
 # Upgrading
 
