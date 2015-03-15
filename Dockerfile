@@ -2,6 +2,8 @@ FROM ubuntu:latest
 
 MAINTAINER Daniel Binggeli <db@xbe.ch>
 
+#15.02.2015 Update to Kivitendo 3.2
+
 # parameter 
 # Change this values to your preferences
 ENV postgresversion 9.3
@@ -28,11 +30,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
 
 #Install missing Perl Modules
 RUN cpan HTML::Restrict
+RUN cpan Image::Info
+RUN cpan GD
 
 
 # ADD KIVITENDO
 # Kivitendo intallation
 RUN git clone https://github.com/kivitendo/kivitendo-erp.git /var/www/kivitendo-erp
+RUN cd /var/www/kivitendo-erp && git checkout release-3.2.0
 ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
 
 #Check Kivitendo installation
