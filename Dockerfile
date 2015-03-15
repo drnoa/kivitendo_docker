@@ -14,6 +14,7 @@ ENV postrespassword docker
 
 
 #Packages 
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libarchive-zip-perl libclone-perl \
@@ -25,13 +26,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libarchive-zip-per
     libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl \
     libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
     libfile-copy-recursive-perl postgresql git build-essential \
-    libgd-gd2-perl libimage-info-perl sed supervisor
+    libgd-gd2-perl libimage-info-perl sed supervisor libgd-gd2-perl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
 
 #Install missing Perl Modules
 RUN cpan HTML::Restrict
 RUN cpan Image::Info
-RUN cpan GD
 
 
 # ADD KIVITENDO
