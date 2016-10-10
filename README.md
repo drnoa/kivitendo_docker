@@ -67,7 +67,7 @@ docker build -t="$USER/kivitendo_docker" .
 Run the Kivitendo image
 
 ```bash
-docker run --name kivitendo_docker -d drnoa/kivitendo_docker:latest
+docker run --name kivitendo_docker -d drnoa/kivitendo_docker
 ```
 Check the ip of your docker container
 ```bash
