@@ -78,6 +78,8 @@ RUN echo "host	all	all	0.0.0.0/0	md5" >> /etc/postgresql/${postgresversion}/main
 # And add ``listen_addresses`` to ``/etc/postgresql/${postgresversion}/main/postgresql.conf``
 RUN sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" "/etc/postgresql/${postgresversion}/main/postgresql.conf"
 
+RUN service postgresql restart
+
 # Expose the PostgreSQL port
 EXPOSE 5432
 
