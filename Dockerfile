@@ -6,7 +6,7 @@ MAINTAINER Daniel Binggeli <db@xbe.ch>
 
 # parameter 
 # Change this values to your preferences
-ENV postgresversion 9.3
+ENV postgresversion 9.5
 ENV locale de_DE
 ENV postrespassword docker
 
@@ -15,9 +15,9 @@ ENV postrespassword docker
 
 #Packages 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libarchive-zip-perl libclone-perl \
+RUN apt-get -qq update && apt-get -y upgrade
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq update && \
+    apt-get -y install apache2 libarchive-zip-perl libclone-perl \
     libconfig-std-perl libdatetime-perl libdbd-pg-perl libdbi-perl \
     libemail-address-perl  libemail-mime-perl libfcgi-perl libjson-perl \
     liblist-moreutils-perl libnet-smtp-ssl-perl libnet-sslglue-perl \
@@ -28,6 +28,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libarchive-zip-per
     libfile-copy-recursive-perl postgresql git build-essential \
     libgd-gd2-perl libimage-info-perl sed supervisor libgd-gd2-perl
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
 
 #Install missing Perl Modules
 RUN cpan HTML::Restrict
@@ -135,7 +136,8 @@ RUN chmod +x /usr/local/bin/*.sh
 
 
 # By default, simply start apache.
-CMD ["/usr/local/bin/start.sh"]
+#CMD ["/usr/local/bin/start.sh"]
+CMD ["/bin/bash"]
 
 
 
