@@ -59,7 +59,7 @@ Alternately you can build the image yourself.
 ```bash
 git clone https://github.com/drnoa/kivitendo_docker.git
 cd kivitendo_docker
-docker build -t="$USER/kivitendo_docker" .
+docker build -t="<name_of_your_container>" .
 ```
 
 # Quick Start
@@ -67,7 +67,7 @@ docker build -t="$USER/kivitendo_docker" .
 Run the Kivitendo image
 
 ```bash
-docker run --name kivitendo_docker -d drnoa/kivitendo_docker
+docker run --name <name_of_your_container> -d drnoa/kivitendo_docker
 ```
 Check the ip of your docker container
 ```bash
@@ -76,28 +76,10 @@ docker ps -q | xargs docker inspect | grep IPAddress | cut -d '"' -f 4
 
 Got to the administrative interface of kivitendo using the password: admin123 and configure the database. All database users (kivitendo and docker) use docker as password.
 
-Alternately you can fetch the password set for the `postgres` user from the container logs.
-
-```bash
-docker logs postgresql
-```
-
-In the output you will notice the following lines with the password:
-
-```bash
-|------------------------------------------------------------------|
-| PostgreSQL User: postgres, Password: xxxxxxxxxxxxxx              |
-|                                                                  |
-| To remove the PostgreSQL login credentials from the logs, please |
-| make a note of password and then delete the file pwfile          |
-| from the data store.                                             |
-|------------------------------------------------------------------|
-```
-
 To test if the postgresql server is working properly, try connecting to the server.
 
 ```bash
-psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql)
+psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} <name_of_your_container>)
 ```
 
 # Configuration
@@ -109,7 +91,7 @@ For data persistence a volume should be mounted at `/var/lib/postgresql`.
 The updated run command looks like this.
 
 ```bash
-docker run --name postgresql -d \
+docker run --name <name_of_your_container> -d \
   -v /opt/postgresql/data:/var/lib/postgresql drnoa/kivitendo_docker:latest
 ```
 
@@ -121,7 +103,7 @@ By default 'docker' is assigned as password for the postgres user.
 
 You can change the password of the postgres user
 ```bash
-psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} postgresql)
+psql -U postgres -h $(docker inspect --format {{.NetworkSettings.IPAddress}} <name_of_your_container>)
 \password postgres
 ```
 
@@ -154,7 +136,7 @@ To upgrade to newer releases, simply follow this 3 step upgrade procedure.
 - **Step 1**: Stop the currently running image
 
 ```bash
-docker stop $USER/kivitendo_docker
+docker stop <name_of_your_container>
 ```
 
 - **Step 2**: Update the docker image.
@@ -166,5 +148,5 @@ docker pull drnoa/kivitendo_docker:latest
 - **Step 3**: Start the image
 
 ```bash
-docker run --name kivitendo_docker -d [OPTIONS] drnoa/kivitendo_docker:latest
+docker run --name <name_of_your_container> -d [OPTIONS] drnoa/kivitendo_docker:latest
 ```
