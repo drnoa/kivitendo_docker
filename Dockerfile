@@ -136,8 +136,8 @@ RUN chmod +x /usr/local/bin/*.sh
 
 
 # By default, simply start apache.
-#CMD ["/usr/local/bin/start.sh"]
-CMD ["/bin/bash"]
+CMD ["/usr/local/bin/start.sh"]
+
 
 
 
