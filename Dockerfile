@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:14.04
 
 MAINTAINER Daniel Binggeli <db@xbe.ch>
 
@@ -25,15 +25,18 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qq update && \
     librose-db-perl librose-object-perl libsort-naturally-perl libpq5 \
     libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl \
     libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
-    libfile-copy-recursive-perl postgresql git build-essential \
-    libgd-gd2-perl libimage-info-perl sed supervisor libgd-gd2-perl
+	libimage-info-perl libgd-gd2-perl libapache2-mod-fcgid \
+    libfile-copy-recursive-perl postgresql libalgorithm-checkdigits-perl \
+	libcrypt-pbkdf2-perl git libcgi-pm-perl git build-essential \
+    sed supervisor aqbanking-tools poppler-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
 
 #Install missing Perl Modules
 RUN cpan HTML::Restrict
 RUN cpan Image::Info
-
+RUN cpan Algorithm::CheckDigits
+RUN cpan PBKDF2::Tiny
 
 # ADD KIVITENDO
 # Kivitendo intallation
