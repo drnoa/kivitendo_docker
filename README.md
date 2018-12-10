@@ -40,10 +40,9 @@ For ubuntu users I suggest [installing docker](https://docs.docker.com/installat
 Here is the shortform of the installation of an updated version of docker on ubuntu.
 
 ```bash
-sudo apt-get purge docker.io
-curl -s https://get.docker.io/ubuntu/ | sudo sh
+sudo apt-get remove docker docker-engine docker.io
 sudo apt-get update
-sudo apt-get install lxc-docker
+sudo apt-get install docker-ce
 ```
 
 # Installation
