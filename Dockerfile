@@ -16,29 +16,31 @@ ENV postrespassword docker
 #Packages 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN apt-get -qq update && apt-get -y upgrade
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq update && \
-    apt-get -y install apache2 libarchive-zip-perl libclone-perl \
-    libconfig-std-perl libdatetime-perl libdbd-pg-perl libdbi-perl \
-    libemail-address-perl  libemail-mime-perl libfcgi-perl libjson-perl \
-    liblist-moreutils-perl libnet-smtp-ssl-perl libnet-sslglue-perl \
-    libparams-validate-perl libpdf-api2-perl librose-db-object-perl \
-    librose-db-perl librose-object-perl libsort-naturally-perl libpq5 \
-    libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl \
-    libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
-    libfile-copy-recursive-perl postgresql git build-essential \
-    libgd-gd2-perl libimage-info-perl sed supervisor libgd-gd2-perl
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base
+RUN DEBIAN_FRONTEND=noninteractive apt install -y  apache2 libarchive-zip-perl libclone-perl \
+  libconfig-std-perl libdatetime-perl libdbd-pg-perl libdbi-perl \
+  libemail-address-perl  libemail-mime-perl libfcgi-perl libjson-perl \
+  liblist-moreutils-perl libnet-smtp-ssl-perl libnet-sslglue-perl \
+  libparams-validate-perl libpdf-api2-perl librose-db-object-perl \
+  librose-db-perl librose-object-perl libsort-naturally-perl \
+  libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl \
+  libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
+  libimage-info-perl libgd-gd2-perl libapache2-mod-fcgid \
+  libfile-copy-recursive-perl postgresql libalgorithm-checkdigits-perl \
+  libcrypt-pbkdf2-perl git libcgi-pm-perl
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base poppler-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
+RUN DEBIAN_FRONTEND=noninteractive apt install -y  build-essential
 
 #Install missing Perl Modules
 RUN cpan HTML::Restrict
 RUN cpan Image::Info
+RUN cpan File::MimeInfo
 
 
 # ADD KIVITENDO
 # Kivitendo intallation
 RUN git clone https://github.com/kivitendo/kivitendo-erp.git /var/www/kivitendo-erp
-RUN cd /var/www/kivitendo-erp && git checkout release-3.2.0
+RUN cd /var/www/kivitendo-erp && git checkout release-3.5.2
 ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
 
 #Check Kivitendo installation
