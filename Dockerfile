@@ -3,6 +3,7 @@ FROM ubuntu:latest
 MAINTAINER Daniel Binggeli <db@xbe.ch>
 
 #15.02.2015 Update to Kivitendo 3.2
+#18.12.2018 Update to Kivitendo 3.5.2
 
 # parameter 
 # Change this values to your preferences
