@@ -9,7 +9,7 @@ MAINTAINER Daniel Binggeli <db@xbe.ch>
 # Change this values to your preferences
 ENV postgresversion 9.5
 ENV locale de_DE
-ENV postrespassword docker
+ENV postgrespassword docker
 
 
 
@@ -27,15 +27,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y  apache2 libarchive-zip-perl l
   libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
   libimage-info-perl libgd-gd2-perl libapache2-mod-fcgid \
   libfile-copy-recursive-perl postgresql libalgorithm-checkdigits-perl \
-  libcrypt-pbkdf2-perl git libcgi-pm-perl
+  libcrypt-pbkdf2-perl git libcgi-pm-perl aqbanking-tools desktop-file-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base poppler-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
 RUN DEBIAN_FRONTEND=noninteractive apt install -y  build-essential
+RUN DEBIAN_FRONTEND=noninteractive update-mime-database /usr/share/mime && update-desktop-database
 
 #Install missing Perl Modules
-RUN cpan HTML::Restrict
-RUN cpan Image::Info
-RUN cpan File::MimeInfo
+RUN cpan Path::Tiny File:Basedir File::DesktopEntry DateTime::event::Cron DateTime::Set \
+         FCGI HTML::Restrict Image::Info PBKDF2::Tiny Text::Unidecode \
+         Set::Infinite Rose::Db::Object File::MimeInfo 
 
 
 # ADD KIVITENDO
@@ -56,9 +57,9 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F
 # Add PostgreSQL's repository. It contains the most recent stable release
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
-# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL
+# Install ``software-properties-common`` and PostgreSQL
 RUN DEBIAN_FRONTEND=noninteractive apt-get update &&\
-    apt-get install -y python-software-properties software-properties-common  \
+    apt-get install -y software-properties-common \
     postgresql-${postgresversion} postgresql-client-${postgresversion} postgresql-contrib-${postgresversion}
 
 # Run the rest of the commands as the ``postgres`` user created by the ``postgres-${postgresversion}`` package when it was ``apt-get installed``
@@ -70,8 +71,8 @@ RUN pg_dropcluster --stop ${postgresversion} main && pg_createcluster --locale $
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
 # then create a database `docker` owned by the ``docker`` role.
 RUN    /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD '${postrespassword}';" &&\
-    psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD '${postrespassword}';" &&\
+    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD '${postgrespassword}';" &&\
+    psql --command "CREATE USER kivitendo WITH SUPERUSER PASSWORD '${postgrespassword}';" &&\
     createdb -O docker docker &&\
     createdb -O kivitendo kivitendo
 
