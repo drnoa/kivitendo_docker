@@ -4,7 +4,6 @@ MAINTAINER Daniel Binggeli <db@xbe.ch>
 
 #15.02.2015 Update to Kivitendo 3.2
 #18.12.2018 Update to Kivitendo 3.5.2
-#17.12.2019 Update to Kivitendo 3.5.4
 
 # parameter 
 # Change this values to your preferences
@@ -28,7 +27,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y  apache2 libarchive-zip-perl l
   libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
   libimage-info-perl libgd-gd2-perl libapache2-mod-fcgid \
   libfile-copy-recursive-perl postgresql libalgorithm-checkdigits-perl \
-  libcrypt-pbkdf2-perl git libcgi-pm-perl aqbanking-tools desktop-file-utils
+  libcrypt-pbkdf2-perl git libcgi-pm-perl aqbanking-tools desktop-file-utils supervisor
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base poppler-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
 RUN DEBIAN_FRONTEND=noninteractive apt install -y  build-essential
