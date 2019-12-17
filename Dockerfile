@@ -1,9 +1,10 @@
-FROM ubuntu:latest
+FROM ubuntu:bionic
 
 MAINTAINER Daniel Binggeli <db@xbe.ch>
 
 #15.02.2015 Update to Kivitendo 3.2
 #18.12.2018 Update to Kivitendo 3.5.2
+#17.12.2019 Update to Kivitendo 3.5.4
 
 # parameter 
 # Change this values to your preferences
@@ -36,7 +37,7 @@ RUN DEBIAN_FRONTEND=noninteractive update-mime-database /usr/share/mime && updat
 #Install missing Perl Modules
 RUN cpan Path::Tiny File:Basedir File::DesktopEntry DateTime::event::Cron DateTime::Set \
          FCGI HTML::Restrict Image::Info PBKDF2::Tiny Text::Unidecode \
-         Set::Infinite Rose::Db::Object File::MimeInfo 
+         Set::Infinite Rose::Db::Object File::MimeInfo Exception::Class 
 
 
 # ADD KIVITENDO
@@ -141,7 +142,6 @@ RUN chmod +x /usr/local/bin/*.sh
 
 # By default, simply start apache.
 CMD ["/usr/local/bin/start.sh"]
-
 
 
 
