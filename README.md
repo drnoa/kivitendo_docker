@@ -66,7 +66,7 @@ docker build -t="<name_of_your_container>" .
 Run the Kivitendo image
 
 ```bash
-docker run --name <name_of_your_container> -d drnoa/kivitendo_docker
+docker run --name <name_of_your_container> -d drnoa/kivitendo-docker
 ```
 Check the ip of your docker container
 ```bash
@@ -91,7 +91,7 @@ The updated run command looks like this.
 
 ```bash
 docker run --name <name_of_your_container> -d \
-  -v /opt/postgresql/data:/var/lib/postgresql drnoa/kivitendo_docker:latest
+  -v /opt/postgresql/data:/var/lib/postgresql drnoa/kivitendo-docker:latest
 ```
 
 This will make sure that the data stored in the database is not lost when the image is stopped and started again.
@@ -141,11 +141,11 @@ docker stop <name_of_your_container>
 - **Step 2**: Update the docker image.
 
 ```bash
-docker pull drnoa/kivitendo_docker:latest
+docker pull drnoa/kivitendo-docker:latest
 ```
 
 - **Step 3**: Start the image
 
 ```bash
-docker run --name <name_of_your_container> -d [OPTIONS] drnoa/kivitendo_docker:latest
+docker run --name <name_of_your_container> -d [OPTIONS] drnoa/kivitendo-docker:latest
 ```
