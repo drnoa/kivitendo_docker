@@ -4,6 +4,7 @@ MAINTAINER Daniel Binggeli <db@xbe.ch>
 
 #15.02.2015 Update to Kivitendo 3.2
 #18.12.2018 Update to Kivitendo 3.5.2
+#17.12.2019 Update to Kivitendo 3.5.4
 
 # parameter 
 # Change this values to your preferences
@@ -27,6 +28,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y  apache2 libarchive-zip-perl l
   libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
   libimage-info-perl libgd-gd2-perl libapache2-mod-fcgid \
   libfile-copy-recursive-perl postgresql libalgorithm-checkdigits-perl \
+  make gcc apache2 libapache2-mod-fcgid libarchive-zip-perl libclone-perl libconfig-std-perl libdatetime-perl libdbd-pg-perl libdbi-perl libemail-address-perl libemail-mime-perl libfcgi-perl libjson-perl liblist-moreutils-perl libnet-smtp-ssl-perl libnet-sslglue-perl libparams-validate-perl libpdf-api2-perl librose-db-object-perl librose-db-perl librose-object-perl libsort-naturally-perl libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl libfile-copy-recursive-perl libgd-gd2-perl libimage-info-perl libalgorithm-checkdigits-perl postgresql git perl-doc libapache2-mod-php php-gd php-imap php-mail php-mail-mime php-pgsql php-fpdf imagemagick fonts-freefont-ttf php-curl dialog php-enchant aspell-de libcgi-pm-perl libdatetime-set-perl libfile-mimeinfo-perl liblist-utilsby-perl libpbkdf2-tiny-perl libregexp-ipv6-perl libtext-unidecode-perl libdaemon-generic-perl libfile-flock-perl libfile-slurp-perl libset-crontab-perl python3 python3-serial \
   libcrypt-pbkdf2-perl git libcgi-pm-perl aqbanking-tools desktop-file-utils supervisor
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base poppler-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
@@ -36,14 +38,22 @@ RUN DEBIAN_FRONTEND=noninteractive update-mime-database /usr/share/mime && updat
 #Install missing Perl Modules
 RUN cpan Path::Tiny File:Basedir File::DesktopEntry DateTime::event::Cron DateTime::Set \
          FCGI HTML::Restrict Image::Info PBKDF2::Tiny Text::Unidecode \
-         Set::Infinite Rose::Db::Object File::MimeInfo Exception::Class 
+         Set::Infinite Rose::Db::Object File::MimeInfo Exception::Class \
+         Daemon::Generic DateTime::Event::Cron File::Flock File::Slurp \
+         List::UtilsBy Regexp::IPv6
 
 
 # ADD KIVITENDO
 # Kivitendo intallation
-RUN git clone https://github.com/kivitendo/kivitendo-erp.git /var/www/kivitendo-erp
-RUN cd /var/www/kivitendo-erp && git checkout release-3.5.2
+RUN cd /var/www/ && git clone https://github.com/kivitendo/kivitendo-erp.git
+RUN cd /var/www/ && git clone https://github.com/kivitendo/kivitendo-crm.git
+RUN cd /var/www/kivitendo-erp && git checkout release-3.5.4 && ln -s ../kivitendo-crm/ crm
 ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
+RUN ln -s ../kivitendo-crm/ crm
+RUN cd /var/www/ && sed -i '$adocument.write("<script type='text/javascript' src='crm/js/ERPplugins.js'></script>")' kivitendo-erp/js/kivi.js
+RUN cd /var/www/kivitendo-erp/menus/user && ln -s ../../../kivitendo-crm/menu/10-crm-menu.yaml 10-crm-menu.yaml
+RUN cd /var/www/kivitendo-erp/sql/Pg-upgrade2-auth && ln -s  ../../../kivitendo-crm/update/add_crm_master_rights.sql add_crm_master_rights.sql
+RUN cd /var/www/kivitendo-erp/locale/de && ln -s ../../../../kivitendo-crm/menu/t8e/menu.de crm-menu.de && ln -s ../../../../kivitendo-crm/menu/t8e/menu-admin.de crm-menu-admin.de
 
 #Check Kivitendo installation
 RUN cd /var/www/kivitendo-erp/ && perl /var/www/kivitendo-erp/scripts/installation_check.pl
@@ -99,6 +109,7 @@ RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd
 RUN echo "ServerName localhost" >> /etc/apache2/conf-available/servername.conf
 RUN a2enconf servername
 
+
 # Manually set up the apache environment variables
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
@@ -119,12 +130,13 @@ RUN chown www-data /var/www/kivitendo-erp/templates /var/www/kivitendo-erp/users
 RUN chmod -R +x /var/www/kivitendo-erp/
 
 #Perl Modul im Apache laden
-RUN a2enmod cgi.load
+RUN a2enmod fcgid
 
 EXPOSE 80
  
 # Update the default apache site with the config we created.
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+ADD apache-config.conf /etc/apache2/sites-available/000-default.conf
  
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql", "/var/log/apache2"]
