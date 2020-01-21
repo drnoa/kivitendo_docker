@@ -5,10 +5,11 @@ MAINTAINER Daniel Binggeli <db@xbe.ch>
 #15.02.2015 Update to Kivitendo 3.2
 #18.12.2018 Update to Kivitendo 3.5.2
 #17.12.2019 Update to Kivitendo 3.5.4
+#20.01.2020 Update to Kivitendo 3.5.5
 
 # parameter 
 # Change this values to your preferences
-ENV postgresversion 9.5
+ENV postgresversion 10
 ENV locale de_DE
 ENV postgrespassword docker
 
@@ -47,7 +48,7 @@ RUN cpan Path::Tiny File:Basedir File::DesktopEntry DateTime::event::Cron DateTi
 # Kivitendo intallation
 RUN cd /var/www/ && git clone https://github.com/kivitendo/kivitendo-erp.git
 RUN cd /var/www/ && git clone https://github.com/kivitendo/kivitendo-crm.git
-RUN cd /var/www/kivitendo-erp && git checkout release-3.5.4 && ln -s ../kivitendo-crm/ crm
+RUN cd /var/www/kivitendo-erp && git checkout release-3.5.5 && ln -s ../kivitendo-crm/ crm
 ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
 RUN ln -s ../kivitendo-crm/ crm
 RUN cd /var/www/ && sed -i '$adocument.write("<script type='text/javascript' src='crm/js/ERPplugins.js'></script>")' kivitendo-erp/js/kivi.js
