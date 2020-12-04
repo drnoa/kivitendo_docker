@@ -1,11 +1,10 @@
 FROM ubuntu:bionic
 
-MAINTAINER Daniel Binggeli <db@xbe.ch>
-
 #15.02.2015 Update to Kivitendo 3.2
 #18.12.2018 Update to Kivitendo 3.5.2
 #17.12.2019 Update to Kivitendo 3.5.4
 #20.01.2020 Update to Kivitendo 3.5.5
+#04.12.2020 Update to Kivitendo 3.6.1
 
 # parameter 
 # Change this values to your preferences
@@ -29,7 +28,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt install -y  apache2 libarchive-zip-perl l
   libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl \
   libimage-info-perl libgd-gd2-perl libapache2-mod-fcgid \
   libfile-copy-recursive-perl postgresql libalgorithm-checkdigits-perl \
-  make gcc apache2 libapache2-mod-fcgid libarchive-zip-perl libclone-perl libconfig-std-perl libdatetime-perl libdbd-pg-perl libdbi-perl libemail-address-perl libemail-mime-perl libfcgi-perl libjson-perl liblist-moreutils-perl libnet-smtp-ssl-perl libnet-sslglue-perl libparams-validate-perl libpdf-api2-perl librose-db-object-perl librose-db-perl librose-object-perl libsort-naturally-perl libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl libfile-copy-recursive-perl libgd-gd2-perl libimage-info-perl libalgorithm-checkdigits-perl postgresql git perl-doc libapache2-mod-php php-gd php-imap php-mail php-mail-mime php-pgsql php-fpdf imagemagick fonts-freefont-ttf php-curl dialog php-enchant aspell-de libcgi-pm-perl libdatetime-set-perl libfile-mimeinfo-perl liblist-utilsby-perl libpbkdf2-tiny-perl libregexp-ipv6-perl libtext-unidecode-perl libdaemon-generic-perl libfile-flock-perl libfile-slurp-perl libset-crontab-perl python3 python3-serial \
+  make gcc apache2 libapache2-mod-fcgid libarchive-zip-perl libclone-perl libconfig-std-perl libdatetime-perl \
+  libcam-pdf-perl libdbd-pg-perl libdbi-perl libemail-address-perl libemail-mime-perl libfcgi-perl libjson-perl liblist-moreutils-perl \
+  libnet-smtp-ssl-perl libnet-sslglue-perl libparams-validate-perl libpdf-api2-perl librose-db-object-perl \
+  librose-db-perl librose-object-perl libsort-naturally-perl libstring-shellquote-perl libtemplate-perl libtext-csv-xs-perl \
+  libtext-iconv-perl liburi-perl libxml-writer-perl libyaml-perl libfile-copy-recursive-perl libgd-gd2-perl \
+  libimage-info-perl libalgorithm-checkdigits-perl postgresql git perl-doc libapache2-mod-php php-gd php-imap \
+  php-mail php-mail-mime php-pgsql php-fpdf imagemagick fonts-freefont-ttf php-curl dialog php-enchant aspell-de \
+  libcgi-pm-perl libdatetime-set-perl libfile-mimeinfo-perl liblist-utilsby-perl libpbkdf2-tiny-perl libregexp-ipv6-perl \
+  libtext-unidecode-perl libdaemon-generic-perl libfile-flock-perl libfile-slurp-perl libset-crontab-perl python3 python3-serial \
   libcrypt-pbkdf2-perl git libcgi-pm-perl aqbanking-tools desktop-file-utils supervisor
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install language-pack-de-base poppler-utils
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install sudo
@@ -48,7 +55,7 @@ RUN cpan Path::Tiny File:Basedir File::DesktopEntry DateTime::event::Cron DateTi
 # Kivitendo intallation
 RUN cd /var/www/ && git clone https://github.com/kivitendo/kivitendo-erp.git
 RUN cd /var/www/ && git clone https://github.com/kivitendo/kivitendo-crm.git
-RUN cd /var/www/kivitendo-erp && git checkout release-3.5.5 && ln -s ../kivitendo-crm/ crm
+RUN cd /var/www/kivitendo-erp && git checkout release-3.5.6.1 && ln -s ../kivitendo-crm/ crm
 ADD kivitendo.conf /var/www/kivitendo-erp/config/kivitendo.conf
 RUN ln -s ../kivitendo-crm/ crm
 RUN cd /var/www/ && sed -i '$adocument.write("<script type='text/javascript' src='crm/js/ERPplugins.js'></script>")' kivitendo-erp/js/kivi.js
